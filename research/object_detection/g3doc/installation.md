@@ -41,6 +41,12 @@ sudo pip install lxml
 sudo pip install jupyter
 sudo pip install matplotlib
 ```
+## Download model
+``` bash
+# find the tensorflow directory
+# from ~/tensorflow/lib/python2.7/site-packages/tensorflow$ 
+git clone https://github.com/qoo/models.git
+```
 
 ## COCO API installation
 
@@ -98,3 +104,10 @@ API by running the following command:
 ```bash
 python object_detection/builders/model_builder_test.py
 ```
+```bash
+# Result: 
+Ran 13 tests in 0.045s
+OK
+```
+
+
