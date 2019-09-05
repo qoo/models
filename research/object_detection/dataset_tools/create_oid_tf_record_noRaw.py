@@ -77,7 +77,7 @@ def main(_):
   #all_annotations = pd.concat([all_annotations, all_image_ids])
 
   tf.logging.log(tf.logging.INFO, 'Found %d images...', len(all_image_ids))
-
+  tf.logging.log(tf.logging.INFO, 'no Raw image reading...')
   with contextlib2.ExitStack() as tf_record_close_stack:
     output_tfrecords = oid_tfrecord_creation.open_sharded_output_tfrecords(
         tf_record_close_stack, FLAGS.output_tf_record_path_prefix,
