@@ -171,7 +171,7 @@ def draw_bounding_box_on_image(image,
   draw.line([(left, top), (left, bottom), (right, bottom),
              (right, top), (left, top)], width=thickness, fill=color)
   try:
-    font = ImageFont.truetype('arial.ttf', 24)
+    font = ImageFont.truetype('arial.ttf', 200)
   except IOError:
     font = ImageFont.load_default()
 
@@ -180,7 +180,7 @@ def draw_bounding_box_on_image(image,
   # instead of above.
   display_str_heights = [font.getsize(ds)[1] for ds in display_str_list]
   # Each display_str has a top and bottom margin of 0.05x.
-  total_display_str_height = (1 + 2 * 0.05) * sum(display_str_heights)
+  total_display_str_height = 4*(1 + 2 * 0.05) * sum(display_str_heights)
 
   if top > total_display_str_height:
     text_bottom = top
