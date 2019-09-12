@@ -52,12 +52,14 @@ if len(query_df) > 0:
 else:
     mAP_dict['Parking meter'] = 'NOT EXIST'
 mAP_dict['metric_path'] = os.path.join(metric_dir ,'metrics.csv')
+mAP_dict['notnull'] = len(df[df['AP@0.5'].notnull()])
 
 ##display
 print("Eval for {}".format(mAP_dict['metric_path']))
 print("mAP@0.5: {}".format(mAP_dict['mAP']))
 print("Coconut AP@0.5: {}".format(mAP_dict['Coconut']))
 print("Parking meter AP@0.5: {}".format(mAP_dict['Parking meter']))
+print("Not nan class: {}".format(mAP_dict['notnull']))
 print("Saving to: {}".format(os.path.join(metric_dir ,'metrics.json')))
 
 json = json.dumps(mAP_dict)
