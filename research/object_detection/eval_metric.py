@@ -66,3 +66,12 @@ json = json.dumps(mAP_dict)
 f = open(os.path.join(metric_dir ,'metrics.json'),"w")
 f.write(json)
 f.close()
+
+with open(os.path.join('/root','metric.txt'), 'a') as f:
+    f.write("Eval for {} \n".format(mAP_dict['metric_path']))
+    f.write("mAP@0.5: {} \n".format(mAP_dict['mAP']))
+    f.write("Coconut AP@0.5: {} \n".format(mAP_dict['Coconut']))
+    f.write("Parking meter AP@0.5: {} \n".format(mAP_dict['Parking meter']))
+    f.write("Not nan class: {} \n".format(mAP_dict['notnull']))
+    f.write("Saving to: {} \n".format(os.path.join(metric_dir ,'metrics.json')))
+
