@@ -468,7 +468,6 @@ class ObjectDetectionEvaluation(object):
                label_id_offset=0):
     if num_groundtruth_classes < 1:
       raise ValueError('Need at least 1 groundtruth class for evaluation.')
-
     self.per_image_eval = per_image_evaluation.PerImageEvaluation(
         num_groundtruth_classes=num_groundtruth_classes,
         matching_iou_threshold=matching_iou_threshold,
@@ -497,6 +496,13 @@ class ObjectDetectionEvaluation(object):
     self.average_precision_per_class.fill(np.nan)
     self.precisions_per_class = []
     self.recalls_per_class = []
+    self.false_discover_rate_per_class = []
+    self.false_negative_rate_per_class = []
+    self.scores = []
+    self.tp_fp_labels = []
+
+    self.average_false_discover_rate = 0.0
+    self.average_false_negative_rate = 0.0
     self.corloc_per_class = np.ones(self.num_class, dtype=float)
 
   def clear_detections(self):
@@ -692,6 +698,16 @@ class ObjectDetectionEvaluation(object):
         all_tp_fp_labels = np.append(all_tp_fp_labels, tp_fp_labels)
       precision, recall = metrics.compute_precision_recall(
           scores, tp_fp_labels, self.num_gt_instances_per_class[class_index])
+      # # Calucate FDR
+      # false_discover_rate, false_negative_rate = metrics.compute_FDR_FNR(
+      #     scores, tp_fp_labels, self.num_gt_instances_per_class[class_index], np.linspace(0.0, 1.0, num=11))
+      # self.false_discover_rate_per_class.append(false_discover_rate)
+      # self.false_negative_rate_per_class.append(false_negative_rate)
+      # self.average_false_discover_rate = np.sum(self.false_discover_rate_per_class, axis=0) / len(self.false_discover_rate_per_class)
+      # self.average_false_negative_rate = np.sum(self.false_negative_rate_per_class, axis=0) / len(self.false_negative_rate_per_class)
+      # self.scores.append(scores)
+      # self.tp_fp_labels.append(tp_fp_labels)
+
       self.precisions_per_class.append(precision)
       self.recalls_per_class.append(recall)
       average_precision = metrics.compute_average_precision(precision, recall)

@@ -18,6 +18,57 @@ from __future__ import division
 
 import numpy as np
 
+def compute_FDR_FNR(scores, labels, num_gt, confidences):
+  """Compute false_discover_rate and false_negative_rate.
+
+    Args:
+    scores: A float numpy array representing detection score
+    labels: A boolean numpy array representing true/false positive labels
+    num_gt: Number of ground truth instances
+
+  Raises:
+    ValueError: if the input is not of the correct format
+
+  """
+  if not isinstance(
+      labels, np.ndarray) or labels.dtype != np.bool or len(labels.shape) != 1:
+    raise ValueError("labels must be single dimension bool numpy array")
+
+  if not isinstance(
+      scores, np.ndarray) or len(scores.shape) != 1:
+    raise ValueError("scores must be single dimension numpy array")
+
+  if num_gt < np.sum(labels):
+    raise ValueError("Number of true positives must be smaller than num_gt.")
+
+  if len(scores) != len(labels):
+    raise ValueError("scores and labels must be of the same size.")
+
+  if not isinstance(
+          confidences, np.ndarray) or len(confidences.shape) != 1:
+    raise ValueError("confidences must be single dimension numpy array")
+
+  if num_gt == 0:
+    return None, None
+  # sorted_indices = np.argsort(scores) # low to high
+  # sorted_indices = sorted_indices[::-1] # high to low
+  labels = labels.astype(int)
+  # true_positive_labels = labels[sorted_indices] # high to low
+  true_positive_labels = labels
+  false_positive_labels = 1 - true_positive_labels
+  FDRs = np.zeros_like(confidences)
+  FNRs = np.zeros_like(confidences)
+  for idx, confidence in enumerate(confidences):
+    num_tp = np.sum(true_positive_labels[np.greater_equal(scores, confidence)]).astype(float)
+    num_fp = np.sum(false_positive_labels[np.greater_equal(scores, confidence)]).astype(float)
+    if num_fp == 0 and (num_fp + num_tp) == 0:
+      FDRs[idx] = 0
+    else:
+      FDRs[idx] = num_fp / (num_fp + num_tp)
+    FNRs[idx] = 1.0 - (num_tp / num_gt)
+
+  return FDRs, FNRs
+
 
 def compute_precision_recall(scores, labels, num_gt):
   """Compute precision and recall.
