@@ -705,9 +705,9 @@ class ObjectDetectionEvaluation(object):
       # self.false_negative_rate_per_class.append(false_negative_rate)
       # self.average_false_discover_rate = np.sum(self.false_discover_rate_per_class, axis=0) / len(self.false_discover_rate_per_class)
       # self.average_false_negative_rate = np.sum(self.false_negative_rate_per_class, axis=0) / len(self.false_negative_rate_per_class)
-      # self.scores.append(scores)
-      # self.tp_fp_labels.append(tp_fp_labels)
-
+      self.scores.append(scores)
+      self.tp_fp_labels.append(tp_fp_labels)
+      ###########
       self.precisions_per_class.append(precision)
       self.recalls_per_class.append(recall)
       average_precision = metrics.compute_average_precision(precision, recall)
