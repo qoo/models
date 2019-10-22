@@ -108,6 +108,9 @@ def create_bottleneck_value(image_path, sess, bottleneck_tensor, image_tensor):
 
 def create_inference_file(image_path, bottleneck_path, sess, tensor_dict, image_tensor, image_resize):
     if not os.path.exists(bottleneck_path):
+        ###  create tempfile
+        with open(bottleneck_path, 'wb') as handle:
+            pickle.dump(image_path, handle, protocol=pickle.HIGHEST_PROTOCOL)
         output_dict = inference_single_image(image_path, sess, tensor_dict, image_tensor, image_resize)
         # if not os.path.exists('/root/bottleneck.shape.npy'):
         #     np.save('/root/bottleneck.shape.npy', bottleneck_values.shape)
@@ -218,26 +221,25 @@ with detection_graph.as_default():
     image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
 
 
+    for step, image_name in enumerate(image_lists):
 
-    with tqdm(total=len(image_lists)) as pbar:
-        for step, image_name in enumerate(image_lists):
-            pbar.update(step)
-            file_name, ext = image_name.split('.')
-            image_path = os.path.join(image_dir, image_name)
-            bottleneck_path = os.path.join(bottleneck_dir, file_name+'.pickle')
-            #             print(image_path, bottleneck_path)
-            loop_start = time.time()
-            try:
-                create_inference_file(image_path, bottleneck_path, sess, tensor_dict, image_tensor, image_resize)
-            except:
-                tf.logging.warning('Fail to create bottleneck: ' + image_name)
-                #                 errorSet.add(image_name)
-                with open(os.path.join(error_dir, 'error.txt'), 'a') as f:
-                    f.write("%s\n" % str(image_name))
-            lfw_time = time.time() - loop_start
-            with open(os.path.join(error_dir, 'log.txt'), 'a') as f:
-                f.write('Total Inference time: {} sec @ {} image\n'.format(lfw_time, image_name))
-            # print('Total Inference time: {} sec @ {} image'.format(lfw_time, image_name))
+        file_name, ext = image_name.split('.')
+        image_path = os.path.join(image_dir, image_name)
+        bottleneck_path = os.path.join(bottleneck_dir, file_name+'.pickle')
+        #             print(image_path, bottleneck_path)
+        loop_start = time.time()
+        try:
+            create_inference_file(image_path, bottleneck_path, sess, tensor_dict, image_tensor, image_resize)
+        except:
+            tf.logging.warning('Fail to create bottleneck: ' + image_name)
+            #                 errorSet.add(image_name)
+            with open(os.path.join(error_dir, 'error.txt'), 'a') as f:
+                f.write("%s\n" % str(image_name))
+        lfw_time = time.time() - loop_start
+        print("{}/{}: {} sec. {}".format(step, len(image_lists), lfw_time, image_name))
+        with open(os.path.join(error_dir, 'log.txt'), 'a') as f:
+            f.write('Total Inference time: {} sec @ {} image\n'.format(lfw_time, image_name))
+        # print('Total Inference time: {} sec @ {} image'.format(lfw_time, image_name))
 
 
 ### example od_inference.py
