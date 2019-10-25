@@ -236,7 +236,7 @@ with detection_graph.as_default():
             with open(os.path.join(error_dir, 'error.txt'), 'a') as f:
                 f.write("%s\n" % str(image_name))
         lfw_time = time.time() - loop_start
-        print("{}/{}: {} sec. {}".format(step, len(image_lists), lfw_time, image_name))
+        print("{}/{}: {} sec. {}. Image dir: {}".format(step, len(image_lists), lfw_time, image_name, image_dir))
         with open(os.path.join(error_dir, 'log.txt'), 'a') as f:
             f.write('Total Inference time: {} sec @ {} image\n'.format(lfw_time, image_name))
         # print('Total Inference time: {} sec @ {} image'.format(lfw_time, image_name))
